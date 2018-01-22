@@ -16,8 +16,7 @@ public class ChampionsHelper {
     public String fromFileToString() {
         String s = "";
         try{
-            System.out.println(String.valueOf(classLoader.getResource( fileName)).substring(6));
-            //обрезаем первые символы, без них строка выглядит так:"file:/D:/projects/...."
+            //обрезаем первые символы, c ними строка выглядит так:"file:/D:/projects/...."
             s = new String(Files.readAllBytes(Paths.get(String.valueOf(classLoader.getResource(fileName)).substring(6))));
 
         } catch (IOException e) {

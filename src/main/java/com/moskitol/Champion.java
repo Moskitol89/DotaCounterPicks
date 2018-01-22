@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Champion {
 
     private String name;
+    private String ruName;
     private ArrayList<Champion> goodVs = new ArrayList<Champion>();
     private ArrayList<Champion> badVs = new ArrayList<Champion>();
 
@@ -46,5 +47,13 @@ public class Champion {
         if(badVs.contains(champion)) {
             badVs.remove(champion);
         }
+    }
+
+    public String getRuName() {
+        return ruName;
+    }
+
+    public void setRuName(String ruName) {
+        this.ruName = ruName;
     }
 }
