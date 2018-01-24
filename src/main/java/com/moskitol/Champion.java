@@ -6,14 +6,11 @@ public class Champion {
 
     private String name;
     private String ruName;
-    private ArrayList<Champion> goodVs = new ArrayList<Champion>();
-    private ArrayList<Champion> badVs = new ArrayList<Champion>();
+
+    private ArrayList<String> goodVs;
+    private ArrayList<String> badVs;
 
     public Champion(String name) {
-        this.name = name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 
@@ -21,33 +18,23 @@ public class Champion {
         return name;
     }
 
-    public ArrayList<Champion> getGoodVs() {
+    public ArrayList<String> getGoodVs()
+    {
         return goodVs;
     }
 
-    public ArrayList<Champion> getBadVs() {
+    public ArrayList<String> getBadVs() {
         return badVs;
     }
 
-    public void addGoodVs(Champion champion) {
-        goodVs.add(champion);
+    public void setGoodVs(ArrayList<String> goodVs) {
+        this.goodVs = goodVs;
     }
 
-    public void addBadVs(Champion champion) {
-        badVs.add(champion);
+    public void setBadVs(ArrayList<String> badVs) {
+        this.badVs = badVs;
     }
 
-    public void removeFromGoodVs(Champion champion) {
-        if(goodVs.contains(champion)) {
-            goodVs.remove(champion);
-        }
-    }
-
-    public void removeFromBadVs(Champion champion) {
-        if(badVs.contains(champion)) {
-            badVs.remove(champion);
-        }
-    }
 
     public String getRuName() {
         return ruName;

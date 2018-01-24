@@ -1,10 +1,12 @@
 package com.moskitol;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ChampionsHelper {
 
@@ -24,17 +26,10 @@ public class ChampionsHelper {
     }
 
     public ArrayList<Champion> initChampCollection() {
-        System.out.println(en);
-
-        System.out.println();
-
-        System.out.println(ru);
-
         //сплитим строку полученную из файла ресурсов по - или переносу строки.
         String[] enArray = en.split("-|\r\n");
         String[] ruArray = ru.split("-|\r\n");
 
-        System.out.println(Arrays.toString(enArray));
 
         ArrayList<Champion> championArrayList = new ArrayList<>();
 
@@ -46,10 +41,39 @@ public class ChampionsHelper {
         for(int i = 0; i < enArray.length; i++) {
             championArrayList.get(i).setRuName(ruArray[i]);
         }
-
+        //добавляем героям коллекции героев против которых они сильны и слабы на этой неделе.
         for(Champion champion: championArrayList) {
-            System.out.println(champion.getName() + "-" + champion.getRuName());
+            ArrayList<ArrayList<String>> arrayLists = getBadAndGoodVsCollections(champion.getName());
+            champion.setGoodVs(arrayLists.get(0));
+            champion.setBadVs(arrayLists.get(1));
         }
         return championArrayList;
+    }
+    //получаем коллекцию с двумя коллекциями с страницы героя dotabuff.
+    // Первая - против кого герой силен, вторая - против кого слаб на этой неделе.
+    private ArrayList<ArrayList<String>> getBadAndGoodVsCollections(String championName) {
+        ArrayList<ArrayList<String>> arrayLists = new ArrayList<>();
+        Document document;
+        try {
+            //получаем dom страницы героя с dotabuff.
+            //в имени героя заменяем пробелы на - и убираем ' для корретного обращения к странице героя.
+            document = Jsoup.connect("https://ru.dotabuff.com/heroes/" + championName.toLowerCase()
+                    .replace(" ","-")
+                    .replace("'","")).get();
+            //получаем секцию с "силен против".
+            arrayLists.add((ArrayList<String>) document.select("div.col-8")
+                    .select("section:eq(6)")
+                    .select("a.link-type-hero")
+                    .eachText());
+            //получаем секцию с "слаб против".
+            arrayLists.add((ArrayList<String>) document.select("div.col-8")
+                    .select("section:eq(7)")
+                    .select("a.link-type-hero")
+                    .eachText());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return arrayLists;
     }
 }
