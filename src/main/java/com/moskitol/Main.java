@@ -1,33 +1,34 @@
 package com.moskitol;
 
+import com.moskitol.view.ProgressDialog;
+import com.moskitol.view.View;
+
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.TimerTask;
 
 public class Main {
 
-    private static View view;
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> view = new View());
-        ArrayList<Champion> championArrayList;
-        SwingWorker swingWorker = new SwingWorker() {
-            @Override
-            protected ArrayList<Champion> doInBackground() throws Exception {
-                ArrayList<Champion> championsHelper = new ChampionsHelper().initChampCollection();
-                System.out.println(championsHelper.size());
-                return championsHelper;
+        final ProgressDialog progress = new ProgressDialog();
+        java.util.Timer timer = new java.util.Timer();
+        final TimerTask task = new TimerTask() {
+            public void run() {
+                progress.showDialog();
             }
         };
-        swingWorker.execute();
-        try {
-            championArrayList = (ArrayList<Champion>) swingWorker.get();
-            System.out.println(championArrayList.size());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-//
+        // Задаем время, через которое должен включиться progressBar,
+        // Если задача еще не выполнена
+        timer.schedule( task, 1000 );
 
+        Thread someThread = new Thread(() -> {
+            // Тут идет обработка.
+            new View();
 
+            SwingUtilities.invokeLater(() -> {
+                task.cancel();
+                progress.closeDialog();
+            });
+        });
+        someThread.start();
     }
 }

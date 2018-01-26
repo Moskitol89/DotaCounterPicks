@@ -3,33 +3,46 @@ package com.moskitol;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChampionsHelper {
 
-    private ClassLoader classLoader = this.getClass().getClassLoader();
+//    private ClassLoader classLoader = this.getClass().getClassLoader();
     private String en = fromFileToString("champions_en");
     private String ru = fromFileToString("champions_ru");
 
-    private String fromFileToString(String fileName) {
-        String s = "";
+    public String fromFileToString(String fileName) {
+        StringBuilder s = new StringBuilder();
         try{
             //обрезаем первые символы, c ними строка выглядит так:"file:/D:/projects/...."
-            s = new String(Files.readAllBytes(Paths.get(String.valueOf(classLoader.getResource(fileName)).substring(6))));
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    ChampionsHelper.class.getClass().getResource("/" +fileName).openStream(),"UTF-8"
+            ));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                s.append(line).append("\n");
+            }
+            bufferedReader.close();
+//            s = new String(Files.readAllBytes(Paths.get(String.valueOf(classLoader.getResource(fileName)).substring(6))));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return s;
+        return s.toString();
     }
 
     public ArrayList<Champion> initChampCollection() {
         //сплитим строку полученную из файла ресурсов по - или переносу строки.
-        String[] enArray = en.split("-|\r\n");
-        String[] ruArray = ru.split("-|\r\n");
-
+        String[] enArray = en.split("-|\n");
+        String[] ruArray = ru.split("-|\n");
 
         ArrayList<Champion> championArrayList = new ArrayList<>();
 
