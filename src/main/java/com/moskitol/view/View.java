@@ -90,7 +90,7 @@ public class View extends JFrame {
             StringBuilder goodVsString = new StringBuilder("<html>");
             StringBuilder badVsString = new StringBuilder("<html>");
 
-            //заполняем коллекции против кого герой слаб/силен
+            //заполняем коллекции против кого герой слаб/силен используя линейный поиск
             for (Champion champion: championArrayList) {
                 if(champion.getName().equalsIgnoreCase(championName)
                         || champion.getRuName().equalsIgnoreCase(championName)) {
