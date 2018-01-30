@@ -21,7 +21,7 @@ public class Main {
         timer.schedule( task, 1000 );
 
         Thread someThread = new Thread(() -> {
-            // Тут идет обработка.
+            // Тут идет обработка
             new View();
 
             SwingUtilities.invokeLater(() -> {
