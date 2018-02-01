@@ -6,22 +6,23 @@ import org.jsoup.nodes.Document;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 public class ChampionsHelper {
 
-//    private ClassLoader classLoader = this.getClass().getClassLoader();
     private String en = fromFileToString("champions_en");
     private String ru = fromFileToString("champions_ru");
 
     public String fromFileToString(String fileName) {
         StringBuilder s = new StringBuilder();
         try{
-            //обрезаем первые символы, c ними строка выглядит так:"file:/D:/projects/...."
-
+            //читам файл в строку из ресурсов
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
                     ChampionsHelper.class.getClass().getResource("/" +fileName).openStream(),"UTF-8"
             ));
@@ -32,19 +33,18 @@ public class ChampionsHelper {
                 s.append(line).append("\n");
             }
             bufferedReader.close();
-//            s = new String(Files.readAllBytes(Paths.get(String.valueOf(classLoader.getResource(fileName)).substring(6))));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return s.toString();
     }
 
-    public ArrayList<Champion> initChampCollection() {
+    public List<Champion> initChampCollection() {
         //сплитим строку полученную из файла ресурсов по - или переносу строки.
         String[] enArray = en.split("-|\n");
         String[] ruArray = ru.split("-|\n");
 
-        ArrayList<Champion> championArrayList = new ArrayList<>();
+        List<Champion> championArrayList = Collections.synchronizedList(new ArrayList<Champion>());
 
         //создаем и добавляем в коллекцию всех героев с именами из файла ресурсов.
         for(String s : enArray) {
@@ -54,18 +54,30 @@ public class ChampionsHelper {
         for(int i = 0; i < enArray.length; i++) {
             championArrayList.get(i).setRuName(ruArray[i]);
         }
+        //Создаем экзекутор для парралельного парсинга.
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
         //добавляем героям коллекции героев против которых они сильны и слабы на этой неделе.
         for(Champion champion: championArrayList) {
-            ArrayList<ArrayList<String>> arrayLists = getBadAndGoodVsCollections(champion.getName());
-            champion.setGoodVs(arrayLists.get(0));
-            champion.setBadVs(arrayLists.get(1));
+            executorService.execute(() -> {
+                List<List<String>> arrayLists = getBadAndGoodVsCollections(champion.getName());
+                champion.setGoodVs(arrayLists.get(0));
+                champion.setBadVs(arrayLists.get(1));
+            });
+
+        }
+        executorService.shutdown();
+        try {
+            //доьавляем ожидание завершения работы всех потоков с потолком в 60 секунд.
+            executorService.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
         return championArrayList;
     }
     //получаем коллекцию с двумя коллекциями с страницы героя dotabuff.
     // Первая - против кого герой силен, вторая - против кого слаб на этой неделе.
-    private ArrayList<ArrayList<String>> getBadAndGoodVsCollections(String championName) {
-        ArrayList<ArrayList<String>> arrayLists = new ArrayList<>();
+    private List<List<String>> getBadAndGoodVsCollections(String championName) {
+        List<List<String>> arrayLists = new ArrayList<>();
         Document document;
         try {
             //получаем dom страницы героя с dotabuff.
@@ -74,12 +86,12 @@ public class ChampionsHelper {
                     .replace(" ","-")
                     .replace("'","")).get();
             //получаем секцию с "силен против".
-            arrayLists.add((ArrayList<String>) document.select("div.col-8")
+            arrayLists.add((document.select("div.col-8")
                     .select("section:eq(6)")
                     .select("a.link-type-hero")
-                    .eachText());
+                    .eachText()));
             //получаем секцию с "слаб против".
-            arrayLists.add((ArrayList<String>) document.select("div.col-8")
+            arrayLists.add(document.select("div.col-8")
                     .select("section:eq(7)")
                     .select("a.link-type-hero")
                     .eachText());

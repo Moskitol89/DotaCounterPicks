@@ -1,14 +1,15 @@
 package com.moskitol;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Champion {
 
     private String name;
     private String ruName;
 
-    private ArrayList<String> goodVs;
-    private ArrayList<String> badVs;
+    private List<String> goodVs;
+    private List<String> badVs;
 
     public Champion(String name) {
         this.name = name;
@@ -18,20 +19,20 @@ public class Champion {
         return name;
     }
 
-    public ArrayList<String> getGoodVs()
+    public List<String> getGoodVs()
     {
         return goodVs;
     }
 
-    public ArrayList<String> getBadVs() {
+    public List<String> getBadVs() {
         return badVs;
     }
 
-    public void setGoodVs(ArrayList<String> goodVs) {
+    public void setGoodVs(List<String> goodVs) {
         this.goodVs = goodVs;
     }
 
-    public void setBadVs(ArrayList<String> badVs) {
+    public void setBadVs(List<String> badVs) {
         this.badVs = badVs;
     }
 

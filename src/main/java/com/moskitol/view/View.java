@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 
 public class View extends JFrame {
 
@@ -16,7 +16,7 @@ public class View extends JFrame {
     private JLabel labelBadVs;
     private JTextField textField;
     private JButton button;
-    private ArrayList<Champion> championArrayList;
+    private List<Champion> championArrayList;
     public View() {
 
         super("Dota counter pick");
@@ -83,8 +83,8 @@ public class View extends JFrame {
             //получаем имя героя из текстовой строки
             String championName = textField.getText();
 
-            ArrayList<String> goodVsArray = null;
-            ArrayList<String> badVsArray = null;
+            List<String> goodVsArray = null;
+            List<String> badVsArray = null;
 
             //создаем стрингбилдеры для лэйблов
             StringBuilder goodVsString = new StringBuilder("<html>");
