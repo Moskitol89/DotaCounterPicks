@@ -18,7 +18,7 @@ public class Main {
         };
         // Задаем время, через которое должен включиться progressBar,
         // Если задача еще не выполнена
-        timer.schedule( task, 1000 );
+        timer.schedule( task, 500 );
 
         Thread someThread = new Thread(() -> {
             // Тут идет обработка

@@ -55,7 +55,7 @@ public class ChampionsHelper {
             championArrayList.get(i).setRuName(ruArray[i]);
         }
         //Создаем экзекутор для парралельного парсинга.
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        ExecutorService executorService = Executors.newCachedThreadPool();
         //добавляем героям коллекции героев против которых они сильны и слабы на этой неделе.
         for(Champion champion: championArrayList) {
             executorService.execute(() -> {
@@ -67,7 +67,7 @@ public class ChampionsHelper {
         }
         executorService.shutdown();
         try {
-            //доьавляем ожидание завершения работы всех потоков с потолком в 60 секунд.
+            //добавляем ожидание завершения работы всех потоков с потолком в 60 секунд.
             executorService.awaitTermination(60, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -78,21 +78,29 @@ public class ChampionsHelper {
     // Первая - против кого герой силен, вторая - против кого слаб на этой неделе.
     private List<List<String>> getBadAndGoodVsCollections(String championName) {
         List<List<String>> arrayLists = new ArrayList<>();
+        String sectionForGoodVs ="section:eq(6)";
+        String sectionForBadVs ="section:eq(7)";
+        //если герой - Techies, то нужно декрементировать номера секций из-за отсутствия 1 блока на его странице.
+        if (championName.equalsIgnoreCase("Techies") ||
+                championName.equalsIgnoreCase("Минер")) {
+            sectionForGoodVs = "section:eq(5)";
+            sectionForBadVs = "section:eq(6)";
+        }
         Document document;
         try {
             //получаем dom страницы героя с dotabuff.
             //в имени героя заменяем пробелы на - и убираем ' для корретного обращения к странице героя.
-            document = Jsoup.connect("https://ru.dotabuff.com/heroes/" + championName.toLowerCase()
+            document = Jsoup.connect("https://dotabuff.com/heroes/" + championName.toLowerCase()
                     .replace(" ","-")
                     .replace("'","")).get();
             //получаем секцию с "силен против".
             arrayLists.add((document.select("div.col-8")
-                    .select("section:eq(6)")
+                    .select(sectionForGoodVs)
                     .select("a.link-type-hero")
                     .eachText()));
             //получаем секцию с "слаб против".
             arrayLists.add(document.select("div.col-8")
-                    .select("section:eq(7)")
+                    .select(sectionForBadVs)
                     .select("a.link-type-hero")
                     .eachText());
 
