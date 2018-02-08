@@ -1,4 +1,4 @@
-package com.moskitol;
+package com.moskitol.controller;
 
 import com.moskitol.view.ProgressDialog;
 import com.moskitol.view.View;

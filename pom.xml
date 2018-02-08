@@ -25,7 +25,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.moskitol.Main</mainClass>
+                            <mainClass>com.moskitol.controller.Main</mainClass>
                             <packageName>com.moskitol</packageName>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>

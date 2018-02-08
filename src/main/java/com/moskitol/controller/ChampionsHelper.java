@@ -1,5 +1,6 @@
-package com.moskitol;
+package com.moskitol.controller;
 
+import com.moskitol.model.Champion;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -22,7 +23,7 @@ public class ChampionsHelper {
     public String fromFileToString(String fileName) {
         StringBuilder s = new StringBuilder();
         try{
-            //читам файл в строку из ресурсов
+            //читаем файл в строку из ресурсов.
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
                     ChampionsHelper.class.getClass().getResource("/" +fileName).openStream(),"UTF-8"
             ));
@@ -80,12 +81,6 @@ public class ChampionsHelper {
         List<List<String>> arrayLists = new ArrayList<>();
         String sectionForGoodVs ="section:eq(6)";
         String sectionForBadVs ="section:eq(7)";
-        //если герой - Techies, то нужно декрементировать номера секций из-за отсутствия 1 блока на его странице.
-        if (championName.equalsIgnoreCase("Techies") ||
-                championName.equalsIgnoreCase("Минер")) {
-            sectionForGoodVs = "section:eq(5)";
-            sectionForBadVs = "section:eq(6)";
-        }
         Document document;
         try {
             //получаем dom страницы героя с dotabuff.
@@ -93,11 +88,18 @@ public class ChampionsHelper {
             document = Jsoup.connect("https://dotabuff.com/heroes/" + championName.toLowerCase()
                     .replace(" ","-")
                     .replace("'","")).get();
+            //у некоторых героев отсутствует блок с роликами на их страницах, у таких героев
+            // нужно декрементировать номера секций.
+            if(document.select("div.col-8").select("section:eq(7)").isEmpty()) {
+                sectionForGoodVs = "section:eq(5)";
+                sectionForBadVs = "section:eq(6)";
+            }
             //получаем секцию с "силен против".
             arrayLists.add((document.select("div.col-8")
                     .select(sectionForGoodVs)
                     .select("a.link-type-hero")
                     .eachText()));
+
             //получаем секцию с "слаб против".
             arrayLists.add(document.select("div.col-8")
                     .select(sectionForBadVs)

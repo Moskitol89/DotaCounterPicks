@@ -1,8 +1,8 @@
 
 package com.moskitol.view;
 
-import com.moskitol.Champion;
-import com.moskitol.ChampionsHelper;
+import com.moskitol.model.Champion;
+import com.moskitol.controller.ChampionsHelper;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -117,6 +117,7 @@ public class View extends JFrame {
                 else {
                     //если совпадений не найдено.
                     labelGoodVs.setText("Герой не найден");
+                    labelBadVs.setText("");
                 }
             }
             //конкатенация строк в формат html для использования в лэйблах.
