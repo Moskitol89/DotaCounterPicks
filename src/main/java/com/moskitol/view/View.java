@@ -19,7 +19,7 @@ public class View extends JFrame {
     private JLabel labelBadVs;
     private JTextField textField;
     private JButton button;
-    private List<Champion> championArrayList;
+    private static List<Champion> championArrayList;
     public View() {
 
         super("Dota counter pick");
@@ -99,10 +99,6 @@ public class View extends JFrame {
             List<String> goodVsArray = null;
             List<String> badVsArray = null;
 
-            //создаем стрингбилдеры для лэйблов.
-            StringBuilder goodVsString = new StringBuilder("<html>");
-            StringBuilder badVsString = new StringBuilder("<html>");
-
             //заполняем коллекции против кого герой слаб/силен используя линейный поиск.
             for (Champion champion: championArrayList) {
                 if(champion.getName().equalsIgnoreCase(championName)
@@ -120,25 +116,30 @@ public class View extends JFrame {
                     labelBadVs.setText("");
                 }
             }
-            //конкатенация строк в формат html для использования в лэйблах.
-            if(goodVsArray != null) {
-                for(String s : goodVsArray) {
-                    goodVsString.append(s).append("<br>");
-                }
-                goodVsString.append("<html>");
-                //изменяем текст в лэйбле на конечный результат.
-                labelGoodVs.setText(goodVsString.toString());
+
+            //получаем строчный результат в формате html.
+            String goodVsString = txtForLabels(goodVsArray);
+            String badVsString = txtForLabels(badVsArray);
+            //изменяем текст в лейблах.
+            if(goodVsString != null && badVsString != null) {
+                labelGoodVs.setText(goodVsString);
+                labelBadVs.setText(badVsString);
             }
 
-            if(badVsArray != null) {
-                for(String s : badVsArray) {
-                    badVsString.append(s).append("<br>");
-                }
-                badVsString.append("<html>");
-                //изменяем текст в лэйбле на конечный результат.
-                labelBadVs.setText(badVsString.toString());
-            }
 
+        }
+        //конкатенация строк в формат html для использования в лэйблах.
+        private String txtForLabels(List<String> list) {
+            if(list != null) {
+                StringBuilder stringBuilder = new StringBuilder("<html>");
+                for(String s : list) {
+                    stringBuilder.append(s).append("<br>");
+                }
+                stringBuilder.append("</html>");
+                //изменяем текст в лэйбле на конечный результат.
+                return stringBuilder.toString();
+            }
+            return null;
         }
     }
 }
