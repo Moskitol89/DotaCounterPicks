@@ -9,14 +9,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class View extends JFrame {
 
     private JLabel labelGoodVs;
     private JLabel labelBadVs;
+    private JLabel link;
     private JTextField textField;
     private JButton button;
     private static List<Champion> championArrayList;
@@ -46,6 +51,8 @@ public class View extends JFrame {
         //создаем лэйблэ для результатов поиска.
         labelGoodVs = new JLabel();
         labelBadVs = new JLabel();
+        //создаем лэйбл для ссылки.
+        link = new JLabel();
         //на крестик закрываем приложение.
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //изменяем размеры окна.
@@ -53,7 +60,7 @@ public class View extends JFrame {
         //задаем расположение лэйблов.
         labelGoodVs.setBounds(40, 90, 150,170);
         labelBadVs.setBounds(200, 90,150,170);
-
+        link.setBounds(230, 5, 150,20);
         //создаем дополнительные лэйблы, поле текста, кнопку и задаем их расположение.
         JLabel helpTxt = new JLabel("Введите имя героя:");
         helpTxt.setBounds(40,10, 150, 20);
@@ -74,10 +81,12 @@ public class View extends JFrame {
         button.addActionListener(buttonListener);
         textField.addActionListener(buttonListener);
 
+
         //добавляем все на панель.
         jPanel.add(helpGood);
         jPanel.add(helpBad);
         jPanel.add(helpTxt);
+        jPanel.add(link);
         jPanel.add(textField);
         jPanel.add(button);
         jPanel.add(labelGoodVs);
@@ -96,37 +105,31 @@ public class View extends JFrame {
             //получаем имя героя из текстовой строки.
             String championName = textField.getText();
 
-            List<String> goodVsArray = null;
-            List<String> badVsArray = null;
+            List<String> goodVsArray;
+            List<String> badVsArray;
 
             //заполняем коллекции против кого герой слаб/силен используя линейный поиск.
             for (Champion champion: championArrayList) {
                 if(champion.getName().equalsIgnoreCase(championName)
                         || champion.getRuName().equalsIgnoreCase(championName)) {
                     goodVsArray = champion.getGoodVs();
+                    badVsArray = champion.getBadVs();
                     //при совпадении изменяем текст в текстовом поле на альтернативное русское имя героя
                     //для удобства в дальнейшем поиске.
                    textField.setText(champion.getRuName());
-                    badVsArray = champion.getBadVs();
-                    break;
+                   goWebsite(link,champion.getLink());
+                   //изменяем текст в лейблах именами подходящих героев.
+                   labelGoodVs.setText(txtForLabels(goodVsArray));
+                   labelBadVs.setText(txtForLabels(badVsArray));
+                   //прерываем цикл, герой уже найден.
+                   break;
                 }
                 else {
-                    //если совпадений не найдено.
+                    //если совпадений не найдено изменяем текст 1 лебла, второй оставляем пустым.
                     labelGoodVs.setText("Герой не найден");
                     labelBadVs.setText("");
                 }
             }
-
-            //получаем строчный результат в формате html.
-            String goodVsString = txtForLabels(goodVsArray);
-            String badVsString = txtForLabels(badVsArray);
-            //изменяем текст в лейблах.
-            if(goodVsString != null && badVsString != null) {
-                labelGoodVs.setText(goodVsString);
-                labelBadVs.setText(badVsString);
-            }
-
-
         }
         //конкатенация строк в формат html для использования в лэйблах.
         private String txtForLabels(List<String> list) {
@@ -140,6 +143,24 @@ public class View extends JFrame {
                 return stringBuilder.toString();
             }
             return null;
+        }
+        //метод перехода на страницу героя.
+        private void goWebsite(JLabel website, final String url) {
+            //создаем ссылку в формате html.
+            website.setText("<html><a href=\"\">go to dotabuff.com</a></html>");
+            website.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            //добавляем лейблу листенер.
+            website.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    try {
+                        //открываем страницу браузера по умолчанию.
+                        Desktop.getDesktop().browse(new URI(url));
+                    } catch (URISyntaxException | IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
         }
     }
 }

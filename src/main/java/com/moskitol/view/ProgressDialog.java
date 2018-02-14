@@ -37,17 +37,17 @@ public class ProgressDialog {
         int max_width = (d.width - in.left - in.right);
         int max_height = (d.height - in.top - in.bottom);
         dialog.setLocation((int) (max_width - dialog.getWidth()) / 2, (int) (max_height - dialog.getHeight() ) / 2);
-        // Отображаем диалог и progressBar
+        // Отображаем диалог и progressBar.
         dialog.setVisible(true);
         progressBar.setVisible(true);
         dialog.setAlwaysOnTop(false);
     }
-    //Метод, отображающий диалог
+    //Метод, отображающий диалог.
     public void showDialog(){
         dialog.setVisible(true);
         dialog.setAlwaysOnTop(true);
     }
-    //Метод, закрывающий диалог
+    //Метод, закрывающий диалог.
     public void closeDialog(){
         if (dialog.isVisible()){
             dialog.getContentPane().remove(progressBar);
@@ -55,7 +55,7 @@ public class ProgressDialog {
             dialog.setVisible(false);
         }
     }
-    //Класс, задающий внешний вид progressBar
+    //Класс, задающий внешний вид progressBar.
     public static class ProgressUI extends BasicProgressBarUI {
         private Rectangle r = new Rectangle();
         protected void paintIndeterminate(Graphics g, JComponent c) {

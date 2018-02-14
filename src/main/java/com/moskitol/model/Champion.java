@@ -1,12 +1,12 @@
 package com.moskitol.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Champion {
 
     private String name;
     private String ruName;
+    private String link;
 
     private List<String> goodVs;
     private List<String> badVs;
@@ -36,6 +36,13 @@ public class Champion {
         this.badVs = badVs;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public String getRuName() {
         return ruName;

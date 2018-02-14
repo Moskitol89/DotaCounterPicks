@@ -49,7 +49,12 @@ public class ChampionsHelper {
 
         //создаем и добавляем в коллекцию всех героев с именами из файла ресурсов.
         for(String s : enArray) {
-            championArrayList.add(new Champion(s));
+            Champion champion = new Champion(s);
+            //добавляем чампиону ссылку на страницу dotabuff.
+            champion.setLink("https://dotabuff.com/heroes/" + s.toLowerCase()
+                    .replace(" ","-")
+                    .replace("'",""));
+            championArrayList.add(champion);
         }
         //добавляем героям альтернативные названия на русском языке.
         for(int i = 0; i < enArray.length; i++) {
