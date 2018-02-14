@@ -158,6 +158,8 @@ public class View extends JFrame {
                         //открываем страницу браузера по умолчанию.
                         Desktop.getDesktop().browse(new URI(url));
                         //удаляем листенер, что бы они не накапливались.
+                        //в результате ссылка перестает работать после первого нажатия
+                        //меньшее из зол.
                         website.removeMouseListener(this);
                     } catch (URISyntaxException | IOException ex) {
                         throw new RuntimeException(ex);
