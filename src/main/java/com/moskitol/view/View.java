@@ -147,8 +147,9 @@ public class View extends JFrame {
         //метод перехода на страницу героя.
         private void goWebsite(JLabel website, final String url) {
             //создаем ссылку в формате html.
-            website.setText("<html><a href=\"\">go to dotabuff.com</a></html>");
+            website.setText("<html><a href=\"\">go to hero page</a></html>");
             website.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            website.removeAll();
             //добавляем лейблу листенер.
             website.addMouseListener(new MouseAdapter() {
                 @Override
@@ -156,6 +157,8 @@ public class View extends JFrame {
                     try {
                         //открываем страницу браузера по умолчанию.
                         Desktop.getDesktop().browse(new URI(url));
+                        //удаляем листенер, что бы они не накапливались.
+                        website.removeMouseListener(this);
                     } catch (URISyntaxException | IOException ex) {
                         throw new RuntimeException(ex);
                     }
