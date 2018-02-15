@@ -7,10 +7,7 @@ import com.moskitol.controller.ChampionsHelper;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
@@ -149,7 +146,12 @@ public class View extends JFrame {
             //создаем ссылку в формате html.
             website.setText("<html><a href=\"\">go to hero page</a></html>");
             website.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            website.removeAll();
+            //получаем листенер.
+            MouseListener[] listeners = website.getMouseListeners();
+            //удаляем листенер, что бы они не накапливались.
+            if(listeners.length > 0) {
+                website.removeMouseListener(listeners[0]);
+            }
             //добавляем лейблу листенер.
             website.addMouseListener(new MouseAdapter() {
                 @Override
@@ -157,10 +159,6 @@ public class View extends JFrame {
                     try {
                         //открываем страницу браузера по умолчанию.
                         Desktop.getDesktop().browse(new URI(url));
-                        //удаляем листенер, что бы они не накапливались.
-                        //в результате ссылка перестает работать после первого нажатия
-                        //меньшее из зол.
-                        website.removeMouseListener(this);
                     } catch (URISyntaxException | IOException ex) {
                         throw new RuntimeException(ex);
                     }
