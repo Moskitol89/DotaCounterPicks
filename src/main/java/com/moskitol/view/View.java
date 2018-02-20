@@ -21,7 +21,7 @@ public class View extends JFrame {
     private JLabel link;
     private JTextField textField;
     private JButton button;
-    private static List<Champion> championArrayList;
+    private List<Champion> championArrayList;
     public View() {
 
         super("Dota counter pick");
@@ -53,7 +53,7 @@ public class View extends JFrame {
         //на крестик закрываем приложение.
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //изменяем размеры окна.
-        setSize(350, 300);
+        setSize(360, 300);
         //задаем расположение лэйблов.
         labelGoodVs.setBounds(40, 90, 150,170);
         labelBadVs.setBounds(200, 90,150,170);
