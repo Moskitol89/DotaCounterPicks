@@ -84,7 +84,7 @@ public class ChampionsHelper {
     // Первая - против кого герой силен, вторая - против кого слаб на этой неделе.
     private List<List<String>> getBadAndGoodVsCollections(String championName) {
         List<List<String>> arrayLists = new ArrayList<>();
-        List<String> percentages = new ArrayList<>();
+        List<String> percentages;
         String sectionForGoodVs ="section:eq(6)";
         String sectionForBadVs ="section:eq(7)";
         Document document;

@@ -144,7 +144,7 @@ public class View extends JFrame {
         //метод перехода на страницу героя.
         private void goWebsite(JLabel website, final String url) {
             //создаем ссылку в формате html.
-            website.setText("<html><a href=\"\">go to hero page</a></html>");
+            website.setText("<html><a href=\"\">на страницу героя</a></html>");
             website.setCursor(new Cursor(Cursor.HAND_CURSOR));
             //получаем листенер.
             MouseListener[] listeners = website.getMouseListeners();
